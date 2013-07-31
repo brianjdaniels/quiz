@@ -20,41 +20,34 @@ q2 = {
 
 questions.push(q1, q2);
 
-var question = document.getElementById("questionText");
+function nextQuestion(newQ){
+    var question = document.getElementById("questionText");
+    question.textContent = questions[newQ].question;
+    var ul = document.createElement('ul');
+    ul.id = "answerList";
+    var choices = questions[newQ].choices;
+    for (var j = 0, len = choices.length; j < len; j++) {
+        var li = document.createElement('li');
+        var input = document.createElement('input');
+        var label = document.createElement('label');
 
-console.log(question);
+        input.id = "ans" + j;
+        input.type = "radio";
+        input.name = "q" + newQ;
+        input.value = j;
 
-question.textContent = questions[0].question;
+        label.htmlFor = input.id;
+        label.textContent = choices[j];
 
-var ul = document.createElement('ul');
-ul.id = "answerList";
-
-var i = 0;
-var choices = questions[0].choices;
-
-for (var j = 0, len = choices.length; j < len; j++) {
-    var li = document.createElement('li');
-    var input = document.createElement('input');
-    var label = document.createElement('label');
-
-    input.id = "ans" + j;
-    input.type = "radio";
-    input.name = "q" + i;
-    input.value = j;
-
-    label.htmlFor = input.id;
-    label.textContent = questions[0].choices[j];
-
-    li.appendChild(input);
-    li.appendChild(label);
-    ul.appendChild(li);
+        li.appendChild(input);
+        li.appendChild(label);
+        ul.appendChild(li);
+    }
+    var oldAnswers = document.getElementById("answers");
+    var oldAnswerList = document.getElementById("answerList");
+    oldAnswers.replaceChild(ul, oldAnswerList);
 }
 
 
+nextQuestion(0);
 
-console.log(ul);
-
-var oldAnswers = document.getElementById("answers");
-var oldAnswerList = document.getElementById("answerList");
-
-oldAnswers.replaceChild(ul, oldAnswerList);
