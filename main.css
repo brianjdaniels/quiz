@@ -6,11 +6,11 @@ header.quizTitle {
     font-size: 36px;
     margin-bottom: 18px;
 }
-header.questionText {
+#questionText {
     font-size: 24px;
     margin-bottom: 12px;
 }
-.answerList {
+#answerList {
     list-style-type: none;
 }
 input[type=submit] {
