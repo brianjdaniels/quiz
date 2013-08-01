@@ -1,27 +1,27 @@
 
-var questions = [],
-    q1 = {},
-    q2 = {},
-    q3 = {},
-    q4 = {},
-    q5 = {};
-
-q1 = {
+var questions = [{
     question: "Who's the boss?",
     choices: ["Brian", "Bryan", "Some other dude", "Justin"],
     correctAnswer: 0
-};
-
-q2 = {
+    },
+    {
     question: "How do you feel?",
     choices: ["Hungry", "Angry", "Hangry"],
     correctAnswer: 2
-};
+    },
+    {
+    question: "How do you feel 2?",
+    choices: ["Hungry", "Angry", "Hangry"],
+    correctAnswer: 2
+    }];
 
-questions.push(q1, q2);
+var chosenAnswers = [];
 
 function nextQuestion(newQ){
     var question = document.getElementById("questionText");
+    var oldAnswers = document.getElementById("answers");
+    var oldAnswerList = document.getElementById("answerList");
+
     question.textContent = questions[newQ].question;
     question.dataset.qNum = newQ;
     var ul = document.createElement('ul');
@@ -44,24 +44,46 @@ function nextQuestion(newQ){
         li.appendChild(label);
         ul.appendChild(li);
     }
-    var oldAnswers = document.getElementById("answers");
-    var oldAnswerList = document.getElementById("answerList");
     oldAnswers.replaceChild(ul, oldAnswerList);
+}
+
+function getChoice(name) {
+    var answerList = document.forms["answers"][name];
+    for (var i = 0; i < answerList.length; i++){
+        if (answerList[i].checked) {
+            chosenAnswers.push(i);
+            break;
+        }
+    }
+}
+
+function printScore(){
+    var total = questions.length;
+    var correct = 0;
+    for (var i = 0; i < total; i++){
+        if (questions[i].correctAnswer === chosenAnswers[i]) {
+            correct++;
+        }
+    }
+    document.body.innerHTML = "<header>Congratulations!</header>" +
+        "<p>You answered " + correct + " out of " + total  + " correctly!</p>" +
+        "<p> That's " + Math.round(correct / total * 100) + "%" + "</p>";
 }
 
 var form = document.getElementById("answers");
 
 form.addEventListener("submit", function(e) {
-    e.preventDefault();
     var question = document.getElementById("questionText");
     var oldQNum = parseInt(question.dataset.qNum);
+    getChoice("q" + oldQNum);
 
     if (oldQNum < (questions.length - 1)){
         nextQuestion(oldQNum + 1);
     }else{
-        alert("Last Question!")
+        printScore();
     }
+    e.preventDefault();
 });
 
-nextQuestion(0);
+if (questions) {nextQuestion(0)};
 
