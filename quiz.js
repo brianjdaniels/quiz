@@ -10,8 +10,8 @@ var questions = [{
     correctAnswer: 2
     },
     {
-    question: "How do you feel 2?",
-    choices: ["Hungry", "Angry", "Hangry"],
+    question: "What is the best city?",
+    choices: ["Fort Wayne", "Chicago", "Grand Rapids"],
     correctAnswer: 2
     }];
 
