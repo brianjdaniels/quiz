@@ -47,11 +47,12 @@ function nextQuestion(newQ){
     oldAnswers.replaceChild(ul, oldAnswerList);
 }
 
-function getChoice(name) {
+function getChoice(qIndex) {
+    var name = "q" + qIndex;
     var answerList = document.forms["answers"][name];
     for (var i = 0; i < answerList.length; i++){
         if (answerList[i].checked) {
-            chosenAnswers.push(i);
+            chosenAnswers[qIndex] = i;
             break;
         }
     }
@@ -75,7 +76,7 @@ var form = document.getElementById("answers");
 form.addEventListener("submit", function(e) {
     var question = document.getElementById("questionText");
     var oldQNum = parseInt(question.dataset.qNum);
-    getChoice("q" + oldQNum);
+    getChoice(oldQNum);
 
     if (oldQNum < (questions.length - 1)){
         nextQuestion(oldQNum + 1);
