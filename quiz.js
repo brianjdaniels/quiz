@@ -12,7 +12,7 @@ var questions = [{
     {
     question: "What is the best city?",
     choices: ["Fort Wayne", "Chicago", "Grand Rapids"],
-    correctAnswer: 2
+    correctAnswer: 1
     }];
 
 var chosenAnswers = [];
