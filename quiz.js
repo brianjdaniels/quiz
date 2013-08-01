@@ -23,6 +23,7 @@ questions.push(q1, q2);
 function nextQuestion(newQ){
     var question = document.getElementById("questionText");
     question.textContent = questions[newQ].question;
+    question.dataset.qNum = newQ;
     var ul = document.createElement('ul');
     ul.id = "answerList";
     var choices = questions[newQ].choices;
@@ -48,6 +49,19 @@ function nextQuestion(newQ){
     oldAnswers.replaceChild(ul, oldAnswerList);
 }
 
+var form = document.getElementById("answers");
+
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    var question = document.getElementById("questionText");
+    var oldQNum = parseInt(question.dataset.qNum);
+
+    if (oldQNum < (questions.length - 1)){
+        nextQuestion(oldQNum + 1);
+    }else{
+        alert("Last Question!")
+    }
+});
 
 nextQuestion(0);
 
