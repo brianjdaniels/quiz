@@ -16,11 +16,11 @@ var questions = [{
     }];
 
 var chosenAnswers = [];
+var form = document.forms['answers'];
 
 function nextQuestion(newQ){
     var question = document.getElementById("questionText");
-    var oldAnswers = document.getElementById("answers");
-    var oldAnswerList = document.getElementById("answerList");
+    var oldAnswerList = form.firstElementChild;
 
     question.textContent = questions[newQ].question;
     question.dataset.qNum = newQ;
@@ -44,7 +44,12 @@ function nextQuestion(newQ){
         li.appendChild(label);
         ul.appendChild(li);
     }
-    oldAnswers.replaceChild(ul, oldAnswerList);
+    if (chosenAnswers[newQ] > -1){
+        var prevChoice = ul.childNodes[chosenAnswers[newQ]].firstChild;
+        prevChoice.setAttribute("checked", true);
+    }
+    form.replaceChild(ul, oldAnswerList);
+
 }
 
 function getChoice(qIndex) {
@@ -71,20 +76,38 @@ function printScore(){
         "<p> That's " + Math.round(correct / total * 100) + "%" + "</p>";
 }
 
-var form = document.getElementById("answers");
-
-form.addEventListener("submit", function(e) {
-    var question = document.getElementById("questionText");
-    var oldQNum = parseInt(question.dataset.qNum);
-    getChoice(oldQNum);
-
-    if (oldQNum < (questions.length - 1)){
-        nextQuestion(oldQNum + 1);
-    }else{
-        printScore();
-    }
+function buttonHandler(e){
     e.preventDefault();
-});
+    var btn = e.target.id;
+    var question = document.getElementById("questionText");
+    var oldQNum = parseInt(question.dataset.qNum, 10);
+    getChoice(oldQNum);
+    switch (btn) {
+        case "answers":
+            if (chosenAnswers[oldQNum] === undefined) {
+                alert("Please answer the question.");
+            } else if (oldQNum < questions.length -1) {
+                nextQuestion(oldQNum + 1);
+            } else {
+                printScore();
+            }
+            break;
+        case "back":
+            if (oldQNum === 0){
+                alert("This is the first question");
+            } else {
+                nextQuestion(oldQNum -1);
+            }
+            break;
+        default :
+            alert("You clicked on " + btn);
+    }
+}
+
+form.addEventListener("submit", buttonHandler);
+
+backBtn = form.children["back"];
+backBtn.addEventListener("click", buttonHandler);
 
 if (questions) {nextQuestion(0)};
 
