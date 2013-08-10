@@ -1,19 +1,4 @@
 
-var questions = [{
-    question: "Who's the boss?",
-    choices: ["Brian", "Bryan", "Some other dude", "Justin"],
-    correctAnswer: 0
-    },
-    {
-    question: "How do you feel?",
-    choices: ["Hungry", "Angry", "Hangry"],
-    correctAnswer: 2
-    },
-    {
-    question: "What is the best city?",
-    choices: ["Fort Wayne", "Chicago", "Grand Rapids"],
-    correctAnswer: 1
-    }];
 
 /////// CROSS-BROWSER EVENT UTIL ////////
 /// From http://www.wrox.com/WileyCDA/WroxTitle/Professional-JavaScript-for-Web-Developers-3rd-Edition.productCd-1118026691,descCd-DOWNLOAD.html
