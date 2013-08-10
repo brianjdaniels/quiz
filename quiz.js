@@ -15,6 +15,43 @@ var questions = [{
     correctAnswer: 1
     }];
 
+/////// CROSS-BROWSER EVENT UTIL ////////
+/// From http://www.wrox.com/WileyCDA/WroxTitle/Professional-JavaScript-for-Web-Developers-3rd-Edition.productCd-1118026691,descCd-DOWNLOAD.html
+
+var EventUtil = {
+
+    addHandler: function(element, type, handler){
+        if (element.addEventListener){
+            element.addEventListener(type, handler, false);
+        } else if (element.attachEvent){
+            element.attachEvent("on" + type, handler);
+        } else {
+            element["on" + type] = handler;
+        }
+    },
+
+    preventDefault: function(event){
+        if (event.preventDefault){
+            event.preventDefault();
+        } else {
+            event.returnValue = false;
+        }
+    },
+
+    removeHandler: function(element, type, handler){
+        if (element.removeEventListener){
+            element.removeEventListener(type, handler, false);
+        } else if (element.detachEvent){
+            element.detachEvent("on" + type, handler);
+        } else {
+            element["on" + type] = null;
+        }
+    }
+};
+
+
+////////////////////////////////////////
+
 var chosenAnswers = [];
 var form = document.forms['answers'];
 
@@ -108,10 +145,14 @@ function buttonHandler(e){
     }
 }
 
-form.addEventListener("submit", buttonHandler);
+EventUtil.addHandler(form, "submit", buttonHandler);
 
-backBtn = form.children["back"];
-backBtn.addEventListener("click", buttonHandler);
+//form.addEventListener("submit", buttonHandler);
+
+var backBtn = form.children["back"];
+EventUtil.addHandler(backBtn, "click", buttonHandler);
+
+//backBtn.addEventListener("click", buttonHandler);
 
 $("article.question").css({display: "none"});
 if (questions) {nextQuestion(0);}
