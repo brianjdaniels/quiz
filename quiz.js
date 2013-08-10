@@ -57,8 +57,12 @@ var form = document.forms['answers'];
 
 function nextQuestion(newQ){
     var question = document.getElementById("questionText");
-    var oldAnswerList = form.firstElementChild;
-
+    var oldAnswerList;
+    if (form.firstElementChild) {
+	oldAnswerList = form.firstElementChild;
+	} else {
+	    oldAnswerList = form.firstChild;
+	}
     var ul = document.createElement('ul');
     ul.id = "answerList";
     var choices = questions[newQ].choices;
@@ -73,8 +77,11 @@ function nextQuestion(newQ){
         input.value = j;
 
         label.htmlFor = input.id;
-        label.textContent = choices[j];
-
+	if ( typeof label.textContent == "string" ){
+            label.textContent = choices[j];
+	}else{
+	    label.innerText = choices[j];
+	}
         li.appendChild(input);
         li.appendChild(label);
         ul.appendChild(li);
@@ -83,7 +90,7 @@ function nextQuestion(newQ){
         var prevChoice = ul.childNodes[chosenAnswers[newQ]].firstChild;
         prevChoice.setAttribute("checked", true);
     }
-    $('article.question').fadeOut( function() {
+    $('div.question').fadeOut( function() {
         question.textContent = questions[newQ].question;
         question.setAttribute("data-qNum", newQ);
         form.replaceChild(ul, oldAnswerList);
@@ -119,7 +126,7 @@ function printScore(){
 
 function buttonHandler(e){
     EventUtil.preventDefault(e);
-    var btn = e.target.id || e.srcElement.id;
+    var btn = ( e.target || e.srcElement ).id;
     var question = document.getElementById("questionText");
     var oldQNum = parseInt(question.getAttribute("data-qNum"), 10);
     getChoice(oldQNum);
@@ -154,6 +161,6 @@ EventUtil.addHandler(backBtn, "click", buttonHandler);
 
 //backBtn.addEventListener("click", buttonHandler);
 
-$("article.question").css({display: "none"});
+$("div.question").css({display: "none"});
 if (questions) {nextQuestion(0);}
 
