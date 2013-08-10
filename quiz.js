@@ -22,8 +22,6 @@ function nextQuestion(newQ){
     var question = document.getElementById("questionText");
     var oldAnswerList = form.firstElementChild;
 
-    question.textContent = questions[newQ].question;
-    question.dataset.qNum = newQ;
     var ul = document.createElement('ul');
     ul.id = "answerList";
     var choices = questions[newQ].choices;
@@ -48,7 +46,11 @@ function nextQuestion(newQ){
         var prevChoice = ul.childNodes[chosenAnswers[newQ]].firstChild;
         prevChoice.setAttribute("checked", true);
     }
-    form.replaceChild(ul, oldAnswerList);
+    $('article.question').fadeOut( function() {
+        question.textContent = questions[newQ].question;
+        question.dataset.qNum = newQ;
+        form.replaceChild(ul, oldAnswerList);
+    }).fadeIn();
 
 }
 
@@ -71,9 +73,11 @@ function printScore(){
             correct++;
         }
     }
-    document.body.innerHTML = "<header>Congratulations!</header>" +
-        "<p>You answered " + correct + " out of " + total  + " correctly!</p>" +
-        "<p> That's " + Math.round(correct / total * 100) + "%" + "</p>";
+    $("body").fadeOut( function() {
+        document.body.innerHTML = "<header>Congratulations!</header>" +
+            "<p>You answered " + correct + " out of " + total  + " correctly!</p>" +
+            "<p> That's " + Math.round(correct / total * 100) + "%" + "</p>";
+    }).fadeIn();
 }
 
 function buttonHandler(e){
@@ -109,5 +113,6 @@ form.addEventListener("submit", buttonHandler);
 backBtn = form.children["back"];
 backBtn.addEventListener("click", buttonHandler);
 
-if (questions) {nextQuestion(0)};
+$("article.question").css({display: "none"});
+if (questions) {nextQuestion(0);}
 
