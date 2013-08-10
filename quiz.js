@@ -85,7 +85,7 @@ function nextQuestion(newQ){
     }
     $('article.question').fadeOut( function() {
         question.textContent = questions[newQ].question;
-        question.dataset.qNum = newQ;
+        question.setAttribute("data-qNum", newQ);
         form.replaceChild(ul, oldAnswerList);
     }).fadeIn();
 
@@ -118,10 +118,10 @@ function printScore(){
 }
 
 function buttonHandler(e){
-    e.preventDefault();
-    var btn = e.target.id;
+    EventUtil.preventDefault(e);
+    var btn = e.target.id || e.srcElement.id;
     var question = document.getElementById("questionText");
-    var oldQNum = parseInt(question.dataset.qNum, 10);
+    var oldQNum = parseInt(question.getAttribute("data-qNum"), 10);
     getChoice(oldQNum);
     switch (btn) {
         case "answers":
