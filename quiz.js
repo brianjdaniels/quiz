@@ -1,8 +1,9 @@
 var questions = [];
 
 $.getJSON('questions.json', function(data) {
-    questions = JSON.parse(data);
-})
+    questions = data;
+    nextQuestion(0);
+});
 
 
 /////// CROSS-BROWSER EVENT UTIL ////////
@@ -143,15 +144,8 @@ function buttonHandler(e){
 }
 
 EventUtil.addHandler(form, "submit", buttonHandler);
-
-//form.addEventListener("submit", buttonHandler);
-
 var backBtn = form.children["back"];
 EventUtil.addHandler(backBtn, "click", buttonHandler);
-
-//backBtn.addEventListener("click", buttonHandler);
-
 $("div.question").css({display: "none"});
 
-if (questions) {nextQuestion(0);}
 
