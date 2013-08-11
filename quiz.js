@@ -143,6 +143,11 @@ function buttonHandler(e){
     }
 }
 
+function loginHandler(e){
+    EventUtil.preventDefault(e);
+    //Need to add stuff :)
+}
+
 EventUtil.addHandler(form, "submit", buttonHandler);
 var backBtn = form.children["back"];
 EventUtil.addHandler(backBtn, "click", buttonHandler);
