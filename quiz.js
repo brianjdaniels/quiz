@@ -108,10 +108,22 @@ function printScore(){
             correct++;
         }
     }
+    var score = Math.round(correct / total * 100);
+    if ( localStorage.currentUser ) {
+	var currentUser = localStorage.getItem("currentUser");
+	var users = JSON.parse( localStorage.getItem("users") );
+	var scores = [];
+	if ( users[currentUser].scores ) {
+	    scores = users[currentUser].scores;
+	}
+	scores.push(score);
+	users[currentUser].scores = scores;
+	localStorage.setItem("users", JSON.stringify(users) );
+    }
     $("body").fadeOut( function() {
         document.body.innerHTML = "<header>Congratulations!</header>" +
             "<p>You answered " + correct + " out of " + total  + " correctly!</p>" +
-            "<p> That's " + Math.round(correct / total * 100) + "%" + "</p>";
+            "<p> That's " + score  + "%" + "</p>";
     }).fadeIn();
 }
 
@@ -145,12 +157,59 @@ function buttonHandler(e){
 
 function loginHandler(e){
     EventUtil.preventDefault(e);
-    //Need to add stuff :)
+    var btn = ( e.target || e.srcElement ).id;
+    var uname = this.elements[0].value;
+    var pword = this.elements[1].value;
+    var users = {};
+    if (uname && pword){
+	if (localStorage.users) {
+	    users = JSON.parse(localStorage.getItem("users"));
+	}
+	switch (btn) {
+	    case "login":
+		if (users[uname]){
+		    if (users[uname].password === pword){
+			localStorage.setItem("currentUser", uname);
+			welcome();
+		    } else { alert("Sorry, wrong password"); }
+		} else { alert("Hmm... I don't see a username like that :/"); }
+	    break;
+	    case "createAccount":
+	    if (users[uname]){
+		alert("That username is already taken. Please try another");
+	    } else {
+		users[uname] = {
+		    password: pword,
+		};
+		localStorage.setItem("users", JSON.stringify(users));
+		localStorage.setItem("currentUser", uname);
+		welcome();
+	    }
+	    break;
+	    default:
+	    alert("Unable to identify button.");
+	}
+    } else { alert("Please enter a username and password."); }
 }
 
-EventUtil.addHandler(form, "submit", buttonHandler);
+
+function welcome(){
+    if (localStorage.currentUser){
+	var uname = localStorage.getItem("currentUser");
+	var div = document.getElementById("signIn");
+	var welcomeHTML = "<p>Welcome, " + uname + "!</p>"
+	div.innerHTML = welcomeHTML;
+	}
+}
+
+var createAccountForm = document.forms["createAccount"];
+var loginForm = document.forms["login"];
 var backBtn = form.children["back"];
+
+EventUtil.addHandler(createAccountForm, "submit", loginHandler);
+EventUtil.addHandler(loginForm, "submit", loginHandler);
+EventUtil.addHandler(form, "submit", buttonHandler);
 EventUtil.addHandler(backBtn, "click", buttonHandler);
 $("div.question").css({display: "none"});
-
+welcome();
 
