@@ -6,7 +6,7 @@ $.getJSON('questions.json', function(data) {
 });
 
 
-/////// CROSS-BROWSER EVENT UTIL ////////
+/////// CROSS-BROWSER EVENT UTIL AND COOKIE UTIL ////////
 /// From http://www.wrox.com/WileyCDA/WroxTitle/Professional-JavaScript-for-Web-Developers-3rd-Edition.productCd-1118026691,descCd-DOWNLOAD.html
 
 var EventUtil = {
@@ -40,7 +40,52 @@ var EventUtil = {
     }
 };
 
+var CookieUtil = {
 
+    get: function (name){
+        var cookieName = encodeURIComponent(name) + "=",
+            cookieStart = document.cookie.indexOf(cookieName),
+            cookieValue = null,
+            cookieEnd;
+
+        if (cookieStart > -1){
+            cookieEnd = document.cookie.indexOf(";", cookieStart);
+            if (cookieEnd == -1){
+                cookieEnd = document.cookie.length;
+            }
+            cookieValue = decodeURIComponent(document.cookie.substring(cookieStart + cookieName.length, cookieEnd));
+        }
+
+        return cookieValue;
+    },
+
+    set: function (name, value, expires, path, domain, secure) {
+        var cookieText = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+
+        if (expires instanceof Date) {
+            cookieText += "; expires=" + expires.toGMTString();
+        }
+
+        if (path) {
+            cookieText += "; path=" + path;
+        }
+
+        if (domain) {
+            cookieText += "; domain=" + domain;
+        }
+
+        if (secure) {
+            cookieText += "; secure";
+        }
+
+        document.cookie = cookieText;
+    },
+
+    unset: function (name, path, domain, secure){
+        this.set(name, "", new Date(0), path, domain, secure);
+    }
+
+};
 ////////////////////////////////////////
 
 var chosenAnswers = [];
@@ -196,15 +241,28 @@ function loginHandler(e){
 function welcome(){
     if (localStorage.currentUser){
 	var uname = localStorage.getItem("currentUser");
-	var div = document.getElementById("signIn");
-	var welcomeHTML = "<p>Welcome, " + uname + "!</p>"
-	div.innerHTML = welcomeHTML;
+	loginHolder = signInArea.replaceChild(welcomeHTML, loginForm);
+    createAccountHolder = signInArea.removeChild(createAccountForm);
+    var welcomeName = document.getElementById("welcomeName");
+    welcomeName.innerHTML = uname;
 	}
+}
+
+function logout(){
+    localStorage.currentUser = "";
+    signInArea.replaceChild(loginHolder, welcomeHTML);
+    signInArea.appendChild(createAccountHolder);
 }
 
 var createAccountForm = document.forms["createAccount"];
 var loginForm = document.forms["login"];
 var backBtn = form.children["back"];
+var signInArea = document.getElementById("signIn");
+var loginHolder;
+var createAccountHolder;
+
+var welcomeHTML = document.createElement("p");
+welcomeHTML.innerHTML = "Welcome, <span id='welcomeName'></span>!      <small><a href='#' onclick='logout()'>Logout</a></small>";
 
 EventUtil.addHandler(createAccountForm, "submit", loginHandler);
 EventUtil.addHandler(loginForm, "submit", loginHandler);
