@@ -154,8 +154,8 @@ function printScore(){
         }
     }
     var score = Math.round(correct / total * 100);
-    if ( localStorage.currentUser ) {
-	var currentUser = localStorage.getItem("currentUser");
+    if ( CookieUtil.get("currentUser") ) {
+	var currentUser = CookieUtil.get("currentUser");
 	var users = JSON.parse( localStorage.getItem("users") );
 	var scores = [];
 	if ( users[currentUser].scores ) {
@@ -214,7 +214,7 @@ function loginHandler(e){
 	    case "login":
 		if (users[uname]){
 		    if (users[uname].password === pword){
-			localStorage.setItem("currentUser", uname);
+			CookieUtil.set("currentUser", uname);
 			welcome();
 		    } else { alert("Sorry, wrong password"); }
 		} else { alert("Hmm... I don't see a username like that :/"); }
@@ -227,7 +227,7 @@ function loginHandler(e){
 		    password: pword,
 		};
 		localStorage.setItem("users", JSON.stringify(users));
-		localStorage.setItem("currentUser", uname);
+		CookieUtil.set("currentUser", uname);
 		welcome();
 	    }
 	    break;
@@ -239,17 +239,18 @@ function loginHandler(e){
 
 
 function welcome(){
-    if (localStorage.currentUser){
-	var uname = localStorage.getItem("currentUser");
+    if (CookieUtil.get("currentUser")){
+	var uname = CookieUtil.get("currentUser");
 	loginHolder = signInArea.replaceChild(welcomeHTML, loginForm);
-    createAccountHolder = signInArea.removeChild(createAccountForm);
-    var welcomeName = document.getElementById("welcomeName");
-    welcomeName.innerHTML = uname;
+	createAccountHolder = signInArea.removeChild(createAccountForm);
+	var welcomeName = document.getElementById("welcomeName");
+	welcomeName.innerHTML = uname;
 	}
 }
 
-function logout(){
-    localStorage.currentUser = "";
+function logout(e){
+    EventUtil.preventDefault(e);
+    CookieUtil.unset("currentUser");
     signInArea.replaceChild(loginHolder, welcomeHTML);
     signInArea.appendChild(createAccountHolder);
 }
@@ -262,8 +263,13 @@ var loginHolder;
 var createAccountHolder;
 
 var welcomeHTML = document.createElement("p");
-welcomeHTML.innerHTML = "Welcome, <span id='welcomeName'></span>!      <small><a href='#' onclick='logout()'>Logout</a></small>";
+welcomeHTML.innerHTML = "Welcome, <span id='welcomeName'></span>!";
+var logoutHTML = document.createElement("a");
+logoutHTML.href = "#";
+logoutHTML.innerHTML = "<small>      Logout</small>";
+welcomeHTML.appendChild(logoutHTML);
 
+EventUtil.addHandler(logoutHTML, "click", logout);
 EventUtil.addHandler(createAccountForm, "submit", loginHandler);
 EventUtil.addHandler(loginForm, "submit", loginHandler);
 EventUtil.addHandler(form, "submit", buttonHandler);
