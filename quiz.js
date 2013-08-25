@@ -260,6 +260,7 @@ function loginHandler(e){
 		};
 		localStorage.setItem("users", JSON.stringify(users));
 		CookieUtil.set("currentUser", uname);
+		$('#createAccountModal').modal('hide');
 		welcome();
 	    }
 	    break;
@@ -274,7 +275,6 @@ function welcome(){
     if (CookieUtil.get("currentUser")){
 	var uname = CookieUtil.get("currentUser");
 	loginHolder = signInArea.replaceChild(welcomeHTML, loginForm);
-	createAccountHolder = signInArea.removeChild(createAccountForm);
 	var welcomeName = document.getElementById("welcomeName");
 	welcomeName.innerHTML = uname;
 	}
@@ -284,7 +284,6 @@ function logout(e){
     EventUtil.preventDefault(e);
     CookieUtil.unset("currentUser");
     signInArea.replaceChild(loginHolder, welcomeHTML);
-    signInArea.appendChild(createAccountHolder);
 }
 
 var createAccountForm = document.forms["createAccount"];
@@ -296,6 +295,7 @@ var createAccountHolder;
 
 var welcomeHTML = document.createElement("p");
 welcomeHTML.innerHTML = "Welcome, <span id='welcomeName'></span>!";
+welcomeHTML.className = "navbar-text";
 var logoutHTML = document.createElement("a");
 logoutHTML.href = "#";
 logoutHTML.innerHTML = "<small>      Logout</small>";
