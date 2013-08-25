@@ -2,51 +2,84 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brian's Quiz</title>
-    <link rel="stylesheet" href="main.css"/>
     <script src="jquery-1.10.2.min.js"></script>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
 </head>
 <body>
-  <header>
-    <h1 class="quizTitle">Try your luck!</h1>
-    <div id="signIn">
-      <form id="login" name="login">
-	<input id="uname" type="text" value="Username...">
-	<input id="pword" type="text" value="Password...">
-	<input id="loginBtn" type="submit" value="Sign In">
-      </form>
-      <form id="createAccount" name="createAccount">
-	<input id="uname" type="text" value="Username...">
-	<input id="pword" type="text" value="Password...">
-	<input id="createAccountBtn" type="submit" value="Create Account">
-      </form>
+  <nav class="navbar navbar-default" role="navigation">
+     <div class="container">
+        <a class="navbar-brand">Brian's Quiz</a>
+        <a data-toggle="modal" href="#createAccountModal" class="navbar-right">Create Account</a>
+        <div id="signIn">
+          <form class="navbar-form navbar-right" id="login" name="login">
+            <input id="uname" type="text" placeholder="Username...">
+            <input id="pword" type="password" placeholder="Password...">
+            <input id="loginBtn" class="btn btn-xs btn-default" type="submit" value="Sign In">
+          </form>
+        </div>
     </div>
-  </header>
+  </nav>
+  <div class="container">
     <div class="question">
-        <h2 id="questionText" data-qNum="0">Question?</h2>
-        <form id="answers" name="answers">
-            <ul id="answerList">
-                <li>
-                    <input id="ansA" type="radio" name="placeholder" value="a">
-                    <label for="ansA">Answer A</label>
-                </li>
-                <li>
-                    <input id="ansB" type="radio" name="placeholder" value="b">
-                    <label for="ansB">Answer B</label>
-                </li>
-                <li>
-                    <input id="ansC" type="radio" name="placeholder" value="c">
-                    <label for="ansC">Answer C</label>
-                </li>
-                <li>
-                    <input id="ansD" type="radio" name="placeholder" value="d">
-                    <label for="ansD">Answer D</label>
-                </li>
-            </ul>
-            <button id="back" type="button">Back</button>
-            <input id="next" type="submit" value="Next">
+        <h3 id="questionText" data-qNum="0">Question?</h3>
+        <form id="answers" name="answers" role="form">
+                <div class="radio col-md-11 col-md-offset-1">
+                    <label>
+                        <input id="ansA" type="radio" name="placeholder" value="a">
+                        Answer A
+                    </label>
+                </div>
+                <div class="radio col-md-11 col-md-offset-1">
+                    <label>
+                        <input id="ansB" type="radio" name="placeholder" value="b">
+                        Answer B
+                    </label>
+                </div>
+                <div class="radio col-md-11 col-md-offset-1">
+                    <label>
+                        <input id="ansC" type="radio" name="placeholder" value="c">
+                        Answer C
+                    </label>
+                </div>
+                <div class="radio col-md-11 col-md-offset-1">
+                    <label>
+                        <input id="ansD" type="radio" name="placeholder" value="d">
+                        Answer D
+                    </label>
+                </div>
+            <div class="col-md-4">
+                <input class="btn btn-sm btn-primary pull-right" id="next" type="submit" value="Next">
+                <button class="btn btn-sm btn-default pull-left" id="back" type="button">Back</button>
+            </div>
         </form>
     </div>
-    <script src="quiz.js"></script>
+    <div class="modal fade" id="createAccountModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Create an Account</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Create an account to track your highest score and show up on the leaderboard.</p>
+                    <p>Passwords aren't secure, so don't... like... use your banking password.</p>
+                    <form class="" id="createAccount" name="createAccount">
+                        <input id="uname" type="text" placeholder="Username...">
+                        <input id="pword" type="password" placeholder="Password...">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="createAccountBtn" type="button" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+  </div>
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="quiz.js"></script>
 </body>
 </html>

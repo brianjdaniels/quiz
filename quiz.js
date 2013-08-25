@@ -1,5 +1,6 @@
 var questions = [];
 
+
 $.getJSON('questions.json', function(data) {
     questions = data;
     nextQuestion(0);
@@ -237,7 +238,7 @@ function loginHandler(e){
 	}
 	switch (btn) {
 	    case "login":
-		if (users[uname]){
+            if (users[uname]){
 		    if (users[uname].password === pword){
 			CookieUtil.set("currentUser", uname);
 			welcome();
@@ -282,7 +283,7 @@ function logout(e){
 
 var createAccountForm = document.forms["createAccount"];
 var loginForm = document.forms["login"];
-var backBtn = form.children["back"];
+var backBtn = document.getElementById("back");
 var signInArea = document.getElementById("signIn");
 var loginHolder;
 var createAccountHolder;
@@ -300,5 +301,6 @@ EventUtil.addHandler(loginForm, "submit", loginHandler);
 EventUtil.addHandler(form, "submit", buttonHandler);
 EventUtil.addHandler(backBtn, "click", buttonHandler);
 $("div.question").css({display: "none"});
+
 welcome();
 
