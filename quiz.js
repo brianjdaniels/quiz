@@ -94,17 +94,13 @@ var form = document.forms['answers'];
 
 function nextQuestion(newQ){
     var question = document.getElementById("questionText");
-    var oldAnswerList;
-    if (form.firstElementChild) {
-	oldAnswerList = form.firstElementChild;
-	} else {
-	    oldAnswerList = form.firstChild;
-	}
-    var ul = document.createElement('ul');
-    ul.id = "answerList";
+    var oldAnswerList = document.getElementById("answerList");
+    var answersDiv = document.createElement('div');
+    answersDiv.id = "answerList";
     var choices = questions[newQ].choices;
     for (var j = 0, len = choices.length; j < len; j++) {
-        var li = document.createElement('li');
+        var choice = document.createElement('div');
+	choice.className = "radio col-md-11 col-md-offset-1";
         var input = document.createElement('input');
         var label = document.createElement('label');
 
@@ -119,18 +115,21 @@ function nextQuestion(newQ){
 	}else{
 	    label.innerText = choices[j];
 	}
-        li.appendChild(input);
-        li.appendChild(label);
-        ul.appendChild(li);
+	label.appendChild(input);
+        choice.appendChild(label);
+	answersDiv.appendChild(choice);
     }
     if (chosenAnswers[newQ] > -1){
-        var prevChoice = ul.childNodes[chosenAnswers[newQ]].firstChild;
+	var prevChoice;
+	if (answersDiv.firstElementChild) {
+            prevChoice = answersDiv.childNodes[chosenAnswers[newQ]].firstElementChild.firstElementChild;
+	}else{ prevChoice = answersDiv.childNodes[chosenAnswers[newQ]].firstChild.firstChild; }
         prevChoice.setAttribute("checked", true);
     }
     $('div.question').fadeOut( function() {
         question.textContent = questions[newQ].question;
         question.setAttribute("data-qNum", newQ);
-        form.replaceChild(ul, oldAnswerList);
+        form.replaceChild(answersDiv, oldAnswerList);
     }).fadeIn();
 
 }

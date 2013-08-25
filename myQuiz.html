@@ -26,6 +26,7 @@
     <div class="question">
         <h3 id="questionText" data-qNum="0">Question?</h3>
         <form id="answers" name="answers" role="form">
+	  <div id="answerList">
                 <div class="radio col-md-11 col-md-offset-1">
                     <label>
                         <input id="ansA" type="radio" name="placeholder" value="a">
@@ -50,10 +51,11 @@
                         Answer D
                     </label>
                 </div>
-            <div class="col-md-4">
-                <input class="btn btn-sm btn-primary pull-right" id="next" type="submit" value="Next">
-                <button class="btn btn-sm btn-default pull-left" id="back" type="button">Back</button>
-            </div>
+	  </div>
+          <div class="col-md-4">
+            <input class="btn btn-sm btn-primary pull-right" id="next" type="submit" value="Next">
+            <button class="btn btn-sm btn-default pull-left" id="back" type="button">Back</button>
+          </div>
         </form>
     </div>
     <div class="modal fade" id="createAccountModal">
