@@ -145,6 +145,29 @@ function getChoice(qIndex) {
     }
 }
 
+function getTopScores(){
+    if (localStorage.users) {
+        var topScores = [];
+        var users = JSON.parse(localStorage.users);
+        for (user in users){
+            usr = {}
+            usr.name = user;
+            usr.topScore = Math.max.apply(null, users[user].scores);
+            topScores.push(usr);
+        }
+        return sortByKey(topScores, topScore);
+    }
+}
+
+// sortByKey handy little function from http://stackoverflow.com/questions/8175093/simple-function-to-sort-a-json-object-using-javascript
+
+function sortByKey(array, key) {
+    return array.sort(function(a, b) {
+        var x = a[key]; var y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}
+
 function printScore(){
     var total = questions.length;
     var correct = 0;
@@ -155,16 +178,18 @@ function printScore(){
     }
     var score = Math.round(correct / total * 100);
     if ( CookieUtil.get("currentUser") ) {
-	var currentUser = CookieUtil.get("currentUser");
-	var users = JSON.parse( localStorage.getItem("users") );
-	var scores = [];
-	if ( users[currentUser].scores ) {
-	    scores = users[currentUser].scores;
-	}
-	scores.push(score);
-	users[currentUser].scores = scores;
-	localStorage.setItem("users", JSON.stringify(users) );
+	    var currentUser = CookieUtil.get("currentUser");
+	    var users = JSON.parse( localStorage.getItem("users") );
+	    var scores = [];
+	    if ( users[currentUser].scores ) {
+	        scores = users[currentUser].scores;
+	    }
+	    scores.push(score);
+        users[currentUser].scores = scores;
+        localStorage.setItem("users", JSON.stringify(users) );
     }
+    var leaderArray = getTopScores();
+    console.log(leaderArray);
     $("body").fadeOut( function() {
         document.body.innerHTML = "<header>Congratulations!</header>" +
             "<p>You answered " + correct + " out of " + total  + " correctly!</p>" +
