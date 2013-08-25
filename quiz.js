@@ -156,16 +156,16 @@ function getTopScores(){
             usr.topScore = Math.max.apply(null, users[user].scores);
             topScores.push(usr);
         }
-        return sortByKey(topScores, topScore);
+        return sortDownByKey(topScores, "topScore");
     }
 }
 
-// sortByKey handy little function from http://stackoverflow.com/questions/8175093/simple-function-to-sort-a-json-object-using-javascript
+// Adapted from http://stackoverflow.com/questions/8175093/simple-function-to-sort-a-json-object-using-javascript
 
-function sortByKey(array, key) {
+function sortDownByKey(array, key) {
     return array.sort(function(a, b) {
         var x = a[key]; var y = b[key];
-        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        return ((x < y) ? 1 : ((x > y) ? -1 : 0));
     });
 }
 
@@ -190,11 +190,17 @@ function printScore(){
         localStorage.setItem("users", JSON.stringify(users) );
     }
     var leaderArray = getTopScores();
-    console.log(leaderArray);
+    var leaderHTML = document.createElement("ol");
+    for (var i = 0, len = leaderArray.length; i < len; i++){
+	var li = document.createElement("li");
+	li.innerHTML = leaderArray[i].name + ": " + leaderArray[i].topScore;
+	leaderHTML.appendChild(li);
+    }
     $("body").fadeOut( function() {
         document.body.innerHTML = "<header>Congratulations!</header>" +
             "<p>You answered " + correct + " out of " + total  + " correctly!</p>" +
             "<p> That's " + score  + "%" + "</p>";
+	document.body.appendChild(leaderHTML);
     }).fadeIn();
 }
 
