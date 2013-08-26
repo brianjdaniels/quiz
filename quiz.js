@@ -150,6 +150,7 @@ function getTopScores(){
         var topScores = [];
         var users = JSON.parse(localStorage.users);
         for (user in users){
+	    if (!users[user].scores) { break; }
             usr = {}
             usr.name = user;
             usr.topScore = Math.max.apply(null, users[user].scores);
