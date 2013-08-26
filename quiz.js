@@ -178,8 +178,10 @@ function printScore(){
         }
     }
     var score = Math.round(correct / total * 100);
-    if ( CookieUtil.get("currentUser") ) {
-	    var currentUser = CookieUtil.get("currentUser");
+    var summary;
+    if (score > 60) { summary = "Congratulations!"; } else { summary = "Oh, snap!"; }
+    var currentUser = CookieUtil.get("currentUser");
+    if ( currentUser) {
 	    var users = JSON.parse( localStorage.getItem("users") );
 	    var scores = [];
 	    if ( users[currentUser].scores ) {
@@ -194,13 +196,16 @@ function printScore(){
     for (var i = 0, len = leaderArray.length; i < len; i++){
 	var li = document.createElement("li");
 	li.innerHTML = leaderArray[i].name + ": " + leaderArray[i].topScore;
+	if ( leaderArray[i].name === currentUser ){ li.className = "currUsr"; }
 	leaderHTML.appendChild(li);
     }
-    $("body").fadeOut( function() {
-        document.body.innerHTML = "<header>Congratulations!</header>" +
+    $("#main").fadeOut( function() {
+        var content = document.getElementById("main");
+	main.innerHTML = "<h1>" + summary + "</h1>" +
             "<p>You answered " + correct + " out of " + total  + " correctly!</p>" +
-            "<p> That's " + score  + "%" + "</p>";
-	document.body.appendChild(leaderHTML);
+            "<p> That's " + score  + "%" + "</p>" +
+	    "<h3>Leader Board:</h3>";
+	main.appendChild(leaderHTML);
     }).fadeIn();
 }
 
