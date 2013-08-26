@@ -25,48 +25,81 @@
 </nav>
 <div class="container" id="main">
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#quiz1" data-toggle="tab">Quiz #1</a></li>
-        <li><a href="#quiz2" data-toggle="tab">Quiz #2</a></li>
+        <li class="active"><a href="#tab1pane" data-toggle="tab">Quiz #1</a></li>
+        <li><a href="#tab2pane" data-toggle="tab">Quiz #2</a></li>
     </ul>
     <div class="tab-content">
-        <div id="quiz1" class="question tab-pane active">
-            <h3 id="questionText" data-qNum="0">Question?</h3>
+            <div id="tab1pane" class="tab-pane active">
+                <div id="quiz0" class="question">
+                    <h3 id="questionText0" data-qNum="0">Question 0?</h3>
 
-            <form id="answers" name="answers" role="form">
-                <div id="answerList">
-                    <div class="radio col-md-11 col-md-offset-1">
-                        <label>
-                            <input id="ansA" type="radio" name="placeholder" value="a">
-                            Answer A
-                        </label>
-                    </div>
-                    <div class="radio col-md-11 col-md-offset-1">
-                        <label>
-                            <input id="ansB" type="radio" name="placeholder" value="b">
-                            Answer B
-                        </label>
-                    </div>
-                    <div class="radio col-md-11 col-md-offset-1">
-                        <label>
-                            <input id="ansC" type="radio" name="placeholder" value="c">
-                            Answer C
-                        </label>
-                    </div>
-                    <div class="radio col-md-11 col-md-offset-1">
-                        <label>
-                            <input id="ansD" type="radio" name="placeholder" value="d">
-                            Answer D
-                        </label>
-                    </div>
+                    <form id="answers0" name="answers" role="form">
+                        <div id="answerList0">
+                            <div class="radio col-md-11 col-md-offset-1">
+                                <label>
+                                    <input id="ans0-0" type="radio" name="placeholder" value="a">
+                                    Answer A
+                                </label>
+                            </div>
+                            <div class="radio col-md-11 col-md-offset-1">
+                                <label>
+                                    <input id="ans0-1" type="radio" name="placeholder" value="b">
+                                    Answer B
+                                </label>
+                            </div>
+                            <div class="radio col-md-11 col-md-offset-1">
+                                <label>
+                                    <input id="ans0-2" type="radio" name="placeholder" value="c">
+                                    Answer C
+                                </label>
+                            </div>
+                            <div class="radio col-md-11 col-md-offset-1">
+                                <label>
+                                    <input id="ans0-3" type="radio" name="placeholder" value="d">
+                                    Answer D
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <input class="btn btn-sm btn-primary pull-right" id="next" type="submit" value="Next">
+                            <button class="btn btn-sm btn-default pull-left" id="back" type="button">Back</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="col-md-4">
-                    <input class="btn btn-sm btn-primary pull-right" id="next" type="submit" value="Next">
-                    <button class="btn btn-sm btn-default pull-left" id="back" type="button">Back</button>
-                </div>
-            </form>
-        </div>
-        <div id="quiz2" class="tab-pane">
-            <p>Quiz 2</p>
+            </div>
+        <div id="tab2pane" class="tab-pane">
+            <div id="quiz1">
+                <h3 id="questionText1" data-qNum="0">Question 1?</h3>
+
+                <form id="answers1" name="answers" role="form">
+                    <div id="answerList1">
+                        <div class="radio col-md-11 col-md-offset-1">
+                            <label>
+                                <input id="ans1-0" type="radio" name="placeholder" value="a">
+                                Answer A
+                            </label>
+                        </div>
+                        <div class="radio col-md-11 col-md-offset-1">
+                            <label>
+                                <input id="ans1-1" type="radio" name="placeholder" value="b">
+                                Answer B
+                            </label>
+                        </div>
+                        <div class="radio col-md-11 col-md-offset-1">
+                            <label>
+                                <input id="ans1-2" type="radio" name="placeholder" value="c">
+                                Answer C
+                            </label>
+                        </div>
+                        <div class="radio col-md-11 col-md-offset-1">
+                            <label>
+                                <input id="ans1-3" type="radio" name="placeholder" value="d">
+                                Answer D
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

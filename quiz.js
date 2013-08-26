@@ -1,5 +1,5 @@
 var questions = [];
-
+var activeQuiz = 0;
 
 $.getJSON('questions.json', function(data) {
     questions = data;
@@ -90,34 +90,34 @@ var CookieUtil = {
 ////////////////////////////////////////
 
 var chosenAnswers = [];
-var form = document.forms['answers'];
+var form = document.forms[("answers" + activeQuiz)];
 
 function nextQuestion(newQ){
-    var question = document.getElementById("questionText");
-    var oldAnswerList = document.getElementById("answerList");
+    var question = document.getElementById(("questionText" + activeQuiz));
+    var oldAnswerList = document.getElementById(("answerList" + activeQuiz));
     var answersDiv = document.createElement('div');
-    answersDiv.id = "answerList";
+    answersDiv.id = "answerList" + activeQuiz;
     var choices = questions[newQ].choices;
     for (var j = 0, len = choices.length; j < len; j++) {
         var choice = document.createElement('div');
-	choice.className = "radio col-md-11 col-md-offset-1";
+        choice.className = "radio col-md-11 col-md-offset-1";
         var input = document.createElement('input');
         var label = document.createElement('label');
 
-        input.id = "ans" + j;
+        input.id = "ans" + activeQuiz + "-" + j;
         input.type = "radio";
         input.name = "q" + newQ;
         input.value = j;
 
         label.htmlFor = input.id;
-	if ( typeof label.textContent == "string" ){
-            label.textContent = choices[j];
-	}else{
-	    label.innerText = choices[j];
-	}
-	label.appendChild(input);
+        if ( typeof label.textContent == "string" ){
+                label.textContent = choices[j];
+        }else{
+            label.innerText = choices[j];
+        }
+        label.appendChild(input);
         choice.appendChild(label);
-	answersDiv.appendChild(choice);
+        answersDiv.appendChild(choice);
     }
     if (chosenAnswers[newQ] > -1){
 	var prevChoice;
@@ -126,7 +126,7 @@ function nextQuestion(newQ){
 	}else{ prevChoice = answersDiv.childNodes[chosenAnswers[newQ]].firstChild.firstChild; }
         prevChoice.setAttribute("checked", true);
     }
-    $('div.question').fadeOut( function() {
+    $(("#quiz" + activeQuiz)).fadeOut( function() {
         question.textContent = questions[newQ].question;
         question.setAttribute("data-qNum", newQ);
         form.replaceChild(answersDiv, oldAnswerList);
@@ -136,7 +136,7 @@ function nextQuestion(newQ){
 
 function getChoice(qIndex) {
     var name = "q" + qIndex;
-    var answerList = document.forms["answers"][name];
+    var answerList = document.forms[("answers" + activeQuiz)][name];
     for (var i = 0; i < answerList.length; i++){
         if (answerList[i].checked) {
             chosenAnswers[qIndex] = i;
@@ -214,11 +214,11 @@ function printScore(){
 function buttonHandler(e){
     EventUtil.preventDefault(e);
     var btn = ( e.target || e.srcElement ).id;
-    var question = document.getElementById("questionText");
+    var question = document.getElementById(("questionText" + activeQuiz));
     var oldQNum = parseInt(question.getAttribute("data-qNum"), 10);
     getChoice(oldQNum);
     switch (btn) {
-        case "answers":
+        case ("answers" + activeQuiz):
             if (chosenAnswers[oldQNum] === undefined) {
                 alert("Please answer the question.");
             } else if (oldQNum < questions.length -1) {
