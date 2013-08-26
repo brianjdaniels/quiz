@@ -9,84 +9,96 @@
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
-  <nav class="navbar navbar-default" role="navigation">
-     <div class="container">
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container">
         <a class="navbar-brand">Brian's Quiz</a>
 
         <div id="signIn" class="navbar-right">
-          <form class="navbar-form " id="login" name="login">
-            <input id="uname" type="text" placeholder="Username...">
-            <input id="pword" type="password" placeholder="Password...">
-            <input id="loginBtn" class="btn btn-xs btn-default" type="submit" value="Sign In">
-            <a data-toggle="modal" href="#createAccountModal" >Create Account</a>
-          </form>
+            <form class="navbar-form " id="login" name="login">
+                <input id="uname" type="text" placeholder="Username...">
+                <input id="pword" type="password" placeholder="Password...">
+                <input id="loginBtn" class="btn btn-xs btn-default" type="submit" value="Sign In">
+                <a data-toggle="modal" href="#createAccountModal">Create Account</a>
+            </form>
         </div>
     </div>
-  </nav>
-  <div class="container" id="main">
-    <div class="question">
-        <h3 id="questionText" data-qNum="0">Question?</h3>
-        <form id="answers" name="answers" role="form">
-	  <div id="answerList">
-                <div class="radio col-md-11 col-md-offset-1">
-                    <label>
-                        <input id="ansA" type="radio" name="placeholder" value="a">
-                        Answer A
-                    </label>
+</nav>
+<div class="container" id="main">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#quiz1" data-toggle="tab">Quiz #1</a></li>
+        <li><a href="#quiz2" data-toggle="tab">Quiz #2</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="quiz1" class="question tab-pane active">
+            <h3 id="questionText" data-qNum="0">Question?</h3>
+
+            <form id="answers" name="answers" role="form">
+                <div id="answerList">
+                    <div class="radio col-md-11 col-md-offset-1">
+                        <label>
+                            <input id="ansA" type="radio" name="placeholder" value="a">
+                            Answer A
+                        </label>
+                    </div>
+                    <div class="radio col-md-11 col-md-offset-1">
+                        <label>
+                            <input id="ansB" type="radio" name="placeholder" value="b">
+                            Answer B
+                        </label>
+                    </div>
+                    <div class="radio col-md-11 col-md-offset-1">
+                        <label>
+                            <input id="ansC" type="radio" name="placeholder" value="c">
+                            Answer C
+                        </label>
+                    </div>
+                    <div class="radio col-md-11 col-md-offset-1">
+                        <label>
+                            <input id="ansD" type="radio" name="placeholder" value="d">
+                            Answer D
+                        </label>
+                    </div>
                 </div>
-                <div class="radio col-md-11 col-md-offset-1">
-                    <label>
-                        <input id="ansB" type="radio" name="placeholder" value="b">
-                        Answer B
-                    </label>
+                <div class="col-md-4">
+                    <input class="btn btn-sm btn-primary pull-right" id="next" type="submit" value="Next">
+                    <button class="btn btn-sm btn-default pull-left" id="back" type="button">Back</button>
                 </div>
-                <div class="radio col-md-11 col-md-offset-1">
-                    <label>
-                        <input id="ansC" type="radio" name="placeholder" value="c">
-                        Answer C
-                    </label>
-                </div>
-                <div class="radio col-md-11 col-md-offset-1">
-                    <label>
-                        <input id="ansD" type="radio" name="placeholder" value="d">
-                        Answer D
-                    </label>
-                </div>
-	  </div>
-          <div class="col-md-4">
-            <input class="btn btn-sm btn-primary pull-right" id="next" type="submit" value="Next">
-            <button class="btn btn-sm btn-default pull-left" id="back" type="button">Back</button>
-          </div>
-        </form>
+            </form>
+        </div>
+        <div id="quiz2" class="tab-pane">
+            <p>Quiz 2</p>
+        </div>
     </div>
-    <div class="modal fade" id="createAccountModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Create an Account</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Create an account to track your highest score and show up on the leaderboard.</p>
-                    <p>Passwords aren't secure, so don't... like... use your banking password.</p>
-                    <form class="" id="createAccount" name="createAccount" role="form">
-		      <div class="form-group">
-			<label for="uname">Username</label>
+</div>
+<div class="modal fade" id="createAccountModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Create an Account</h4>
+            </div>
+            <div class="modal-body">
+                <p>Create an account to track your highest score and show up on the leaderboard.</p>
+
+                <p>Passwords aren't secure, so don't... like... use your banking password.</p>
+
+                <form class="" id="createAccount" name="createAccount" role="form">
+                    <div class="form-group">
+                        <label for="uname">Username</label>
                         <input id="uname" type="text" placeholder="Username...">
-		      </div>
-		      <div class="form-group">
-			<label for="pword">Password</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="pword">Password</label>
                         <input id="pword" type="password" placeholder="Password...">
-		      </div>
-		      <button id="createAccountBtn" type="submit" class="btn btn-primary">Save</button>
-                    </form>
-                </div>
+                    </div>
+                    <button id="createAccountBtn" type="submit" class="btn btn-primary">Save</button>
+                </form>
             </div>
         </div>
-
     </div>
-  </div>
-  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-  <script src="quiz.js"></script>
+
+</div>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="quiz.js"></script>
 </body>
 </html>
