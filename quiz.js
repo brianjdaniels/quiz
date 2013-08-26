@@ -149,16 +149,17 @@ function getTopScores(){
     if (localStorage.users) {
         var topScores = [];
         var users = JSON.parse(localStorage.users);
-        for (user in users){
-	    if (users[user].scores) { 
-		usr = {}
-		usr.name = user;
-		usr.topScore = Math.max.apply(null, users[user].scores);
-		topScores.push(usr);
-	    }
+        for (var user in users){
+            if (users[user].scores) {
+            usr = {};
+            usr.name = user;
+            usr.topScore = Math.max.apply(null, users[user].scores);
+            topScores.push(usr);
+	        }
         }
         return sortDownByKey(topScores, "topScore");
     }
+    else return [];
 }
 
 // Adapted from http://stackoverflow.com/questions/8175093/simple-function-to-sort-a-json-object-using-javascript
@@ -194,11 +195,11 @@ function printScore(){
     }
     var leaderArray = getTopScores();
     var leaderHTML = document.createElement("ol");
-    for (var i = 0, len = leaderArray.length; i < len; i++){
-	var li = document.createElement("li");
-	li.innerHTML = leaderArray[i].name + ": " + leaderArray[i].topScore;
-	if ( leaderArray[i].name === currentUser ){ li.className = "currUsr"; }
-	leaderHTML.appendChild(li);
+    for (var j = 0, len = leaderArray.length; j < len; j++){
+        var li = document.createElement("li");
+        li.innerHTML = leaderArray[j].name + ": " + leaderArray[j].topScore;
+        if ( leaderArray[j].name === currentUser ){ li.className = "currUsr"; }
+        leaderHTML.appendChild(li);
     }
     $("#main").fadeOut( function() {
         var content = document.getElementById("main");
