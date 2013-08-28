@@ -1,9 +1,19 @@
-var questions = [];
+var quizes = [];
 var activeQuiz = 0;
+var chosenAnswers = [];
+
 
 $.getJSON('questions.json', function(data) {
-    questions = data;
-    nextQuestion(0);
+    quizes = data;
+    for (var i =0; i < quizes.length; i++){
+        var doc = document;
+        var form = doc.forms[("answers" + i)]
+        var backBtn = doc.getElementById(("back" + i));
+        EventUtil.addHandler(backBtn, "click", buttonHandler);
+        EventUtil.addHandler(form, "submit", buttonHandler);
+        chosenAnswers[i] = [];
+        nextQuestion(i,0);
+    }
 });
 
 
@@ -89,22 +99,22 @@ var CookieUtil = {
 };
 ////////////////////////////////////////
 
-var chosenAnswers = [];
-var form = document.forms[("answers" + activeQuiz)];
+//var form = document.forms[("answers" + activeQuiz)];
 
-function nextQuestion(newQ){
-    var question = document.getElementById(("questionText" + activeQuiz));
-    var oldAnswerList = document.getElementById(("answerList" + activeQuiz));
+function nextQuestion(quizNumber, newQ){
+    var form = document.forms[("answers" + quizNumber)];
+    var question = document.getElementById(("questionText" + quizNumber));
+    var oldAnswerList = document.getElementById(("answerList" + quizNumber));
     var answersDiv = document.createElement('div');
-    answersDiv.id = "answerList" + activeQuiz;
-    var choices = questions[newQ].choices;
+    answersDiv.id = "answerList" + quizNumber;
+    var choices = quizes[quizNumber][newQ].choices;
     for (var j = 0, len = choices.length; j < len; j++) {
         var choice = document.createElement('div');
         choice.className = "radio col-md-11 col-md-offset-1";
         var input = document.createElement('input');
         var label = document.createElement('label');
 
-        input.id = "ans" + activeQuiz + "-" + j;
+        input.id = "ans" + quizNumber + "-" + j;
         input.type = "radio";
         input.name = "q" + newQ;
         input.value = j;
@@ -119,41 +129,43 @@ function nextQuestion(newQ){
         choice.appendChild(label);
         answersDiv.appendChild(choice);
     }
-    if (chosenAnswers[newQ] > -1){
-	var prevChoice;
-	if (answersDiv.firstElementChild) {
-            prevChoice = answersDiv.childNodes[chosenAnswers[newQ]].firstElementChild.firstElementChild;
-	}else{ prevChoice = answersDiv.childNodes[chosenAnswers[newQ]].firstChild.firstChild; }
+    if (chosenAnswers[quizNumber][newQ] > -1){
+	    var prevChoice;
+	    if (answersDiv.firstElementChild) {
+            prevChoice = answersDiv.childNodes[chosenAnswers[quizNumber][newQ]].firstElementChild.firstElementChild;
+	    }else{
+            prevChoice = answersDiv.childNodes[chosenAnswers[quizNumber][newQ]].firstChild.firstChild;
+        }
         prevChoice.setAttribute("checked", true);
     }
-    $(("#quiz" + activeQuiz)).fadeOut( function() {
-        question.textContent = questions[newQ].question;
+    $(("#quiz" + quizNumber)).fadeOut( function() {
+        question.textContent = quizes[quizNumber][newQ].question;
         question.setAttribute("data-qNum", newQ);
         form.replaceChild(answersDiv, oldAnswerList);
     }).fadeIn();
 
 }
 
-function getChoice(qIndex) {
+function getChoice(quizNumber, qIndex) {
     var name = "q" + qIndex;
-    var answerList = document.forms[("answers" + activeQuiz)][name];
+    var answerList = document.forms[("answers" + quizNumber)][name];
     for (var i = 0; i < answerList.length; i++){
         if (answerList[i].checked) {
-            chosenAnswers[qIndex] = i;
+            chosenAnswers[quizNumber][qIndex] = i;
             break;
         }
     }
 }
 
-function getTopScores(){
+function getTopScores(quizNumber){
     if (localStorage.users) {
         var topScores = [];
         var users = JSON.parse(localStorage.users);
         for (var user in users){
-            if (users[user].scores) {
+            if (users[user].scores[quizNumber]) {
             usr = {};
             usr.name = user;
-            usr.topScore = Math.max.apply(null, users[user].scores);
+            usr.topScore = Math.max.apply(null, users[user].scores[quizNumber]);
             topScores.push(usr);
 	        }
         }
@@ -172,10 +184,10 @@ function sortDownByKey(array, key) {
 }
 
 function printScore(){
-    var total = questions.length;
+    var total = quizes[activeQuiz].length;
     var correct = 0;
     for (var i = 0; i < total; i++){
-        if (questions[i].correctAnswer === chosenAnswers[i]) {
+        if (quizes[activeQuiz][i].correctAnswer === chosenAnswers[activeQuiz][i]) {
             correct++;
         }
     }
@@ -184,16 +196,16 @@ function printScore(){
     if (score > 60) { summary = "Congratulations!"; } else { summary = "Oh, snap!"; }
     var currentUser = CookieUtil.get("currentUser");
     if ( currentUser) {
-	    var users = JSON.parse( localStorage.getItem("users") );
 	    var scores = [];
-	    if ( users[currentUser].scores ) {
-	        scores = users[currentUser].scores;
+        var users = JSON.parse( localStorage.getItem("users") );
+	    if ( users[currentUser].scores[activeQuiz] ) {
+	        scores = users[currentUser].scores[activeQuiz];
 	    }
 	    scores.push(score);
-        users[currentUser].scores = scores;
+        users[currentUser].scores[activeQuiz] = scores;
         localStorage.setItem("users", JSON.stringify(users) );
     }
-    var leaderArray = getTopScores();
+    var leaderArray = getTopScores(activeQuiz);
     var leaderHTML = document.createElement("ol");
     for (var j = 0, len = leaderArray.length; j < len; j++){
         var li = document.createElement("li");
@@ -214,15 +226,29 @@ function printScore(){
 function buttonHandler(e){
     EventUtil.preventDefault(e);
     var btn = ( e.target || e.srcElement ).id;
+    var answersRegex = /answers(\d+)/;
+    var backRegex = /back(\d+)/;
+    var btnCase = "";
+    if (answersRegex.exec(btn)){
+        btnCase = "answers";
+        var result = answersRegex.exec(btn);
+        activeQuiz = result[1];
+    }else if (backRegex.exec(btn)){
+        btnCase = "back";
+        var result2 = backRegex.exec(btn);
+        activeQuiz = result2[1];
+    }else{
+        alert("I don't know what button you pressed...Sorry!");
+    }
     var question = document.getElementById(("questionText" + activeQuiz));
     var oldQNum = parseInt(question.getAttribute("data-qNum"), 10);
-    getChoice(oldQNum);
-    switch (btn) {
-        case ("answers" + activeQuiz):
-            if (chosenAnswers[oldQNum] === undefined) {
+    getChoice(activeQuiz, oldQNum);
+    switch (btnCase) {
+        case "answers":
+            if (chosenAnswers[activeQuiz][oldQNum] === undefined) {
                 alert("Please answer the question.");
-            } else if (oldQNum < questions.length -1) {
-                nextQuestion(oldQNum + 1);
+            } else if (oldQNum < quizes[activeQuiz].length -1) {
+                nextQuestion(activeQuiz, oldQNum + 1);
             } else {
                 printScore();
             }
@@ -231,7 +257,7 @@ function buttonHandler(e){
             if (oldQNum === 0){
                 alert("This is the first question");
             } else {
-                nextQuestion(oldQNum -1);
+                nextQuestion(activeQuiz, oldQNum -1);
             }
             break;
         default :
@@ -252,9 +278,9 @@ function loginHandler(e){
 	switch (btn) {
 	    case "login":
             if (users[uname]){
-		    if (users[uname].password === pword){
-			CookieUtil.set("currentUser", uname);
-			welcome();
+                if (users[uname].password === pword){
+                CookieUtil.set("currentUser", uname);
+                welcome();
 		    } else { alert("Sorry, wrong password"); }
 		} else { alert("Hmm... I don't see a username like that :/"); }
 	    break;
@@ -264,6 +290,7 @@ function loginHandler(e){
 	    } else {
 		users[uname] = {
 		    password: pword,
+            scores: {}
 		};
 		localStorage.setItem("users", JSON.stringify(users));
 		CookieUtil.set("currentUser", uname);
@@ -295,7 +322,6 @@ function logout(e){
 
 var createAccountForm = document.forms["createAccount"];
 var loginForm = document.forms["login"];
-var backBtn = document.getElementById("back");
 var signInArea = document.getElementById("signIn");
 var loginHolder;
 var createAccountHolder;
@@ -311,8 +337,6 @@ welcomeHTML.appendChild(logoutHTML);
 EventUtil.addHandler(logoutHTML, "click", logout);
 EventUtil.addHandler(createAccountForm, "submit", loginHandler);
 EventUtil.addHandler(loginForm, "submit", loginHandler);
-EventUtil.addHandler(form, "submit", buttonHandler);
-EventUtil.addHandler(backBtn, "click", buttonHandler);
 $("div.question").css({display: "none"});
 
 welcome();
