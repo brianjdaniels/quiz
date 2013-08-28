@@ -213,13 +213,14 @@ function printScore(){
         if ( leaderArray[j].name === currentUser ){ li.className = "currUsr"; }
         leaderHTML.appendChild(li);
     }
-    $("#main").fadeOut( function() {
-        var content = document.getElementById("main");
-	main.innerHTML = "<h1>" + summary + "</h1>" +
+    var div = "quiz" + activeQuiz;
+    $(("#" + div)).fadeOut( function() {
+        var content = document.getElementById(div);
+	    content.innerHTML = "<h1>" + summary + "</h1>" +
             "<p>You answered " + correct + " out of " + total  + " correctly!</p>" +
             "<p> That's " + score  + "%" + "</p>" +
 	    "<h3>Leader Board:</h3>";
-	main.appendChild(leaderHTML);
+	    content.appendChild(leaderHTML);
     }).fadeIn();
 }
 
