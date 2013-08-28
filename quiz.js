@@ -1,5 +1,4 @@
 var quizes = [];
-var activeQuiz = 0;
 var chosenAnswers = [];
 
 
@@ -99,8 +98,6 @@ var CookieUtil = {
 };
 ////////////////////////////////////////
 
-//var form = document.forms[("answers" + activeQuiz)];
-
 function nextQuestion(quizNumber, newQ){
     var form = document.forms[("answers" + quizNumber)];
     var question = document.getElementById(("questionText" + quizNumber));
@@ -183,11 +180,11 @@ function sortDownByKey(array, key) {
     });
 }
 
-function printScore(){
-    var total = quizes[activeQuiz].length;
+function printScore(quizNumber){
+    var total = quizes[quizNumber].length;
     var correct = 0;
     for (var i = 0; i < total; i++){
-        if (quizes[activeQuiz][i].correctAnswer === chosenAnswers[activeQuiz][i]) {
+        if (quizes[quizNumber][i].correctAnswer === chosenAnswers[quizNumber][i]) {
             correct++;
         }
     }
@@ -198,14 +195,14 @@ function printScore(){
     if ( currentUser) {
 	    var scores = [];
         var users = JSON.parse( localStorage.getItem("users") );
-	    if ( users[currentUser].scores[activeQuiz] ) {
-	        scores = users[currentUser].scores[activeQuiz];
+	    if ( users[currentUser].scores[quizNumber] ) {
+	        scores = users[currentUser].scores[quizNumber];
 	    }
 	    scores.push(score);
-        users[currentUser].scores[activeQuiz] = scores;
+        users[currentUser].scores[quizNumber] = scores;
         localStorage.setItem("users", JSON.stringify(users) );
     }
-    var leaderArray = getTopScores(activeQuiz);
+    var leaderArray = getTopScores(quizNumber);
     var leaderHTML = document.createElement("ol");
     for (var j = 0, len = leaderArray.length; j < len; j++){
         var li = document.createElement("li");
@@ -213,7 +210,7 @@ function printScore(){
         if ( leaderArray[j].name === currentUser ){ li.className = "currUsr"; }
         leaderHTML.appendChild(li);
     }
-    var div = "quiz" + activeQuiz;
+    var div = "quiz" + quizNumber;
     $(("#" + div)).fadeOut( function() {
         var content = document.getElementById(div);
 	    content.innerHTML = "<h1>" + summary + "</h1>" +
@@ -230,6 +227,7 @@ function buttonHandler(e){
     var answersRegex = /answers(\d+)/;
     var backRegex = /back(\d+)/;
     var btnCase = "";
+    var activeQuiz = "";
     if (answersRegex.exec(btn)){
         btnCase = "answers";
         var result = answersRegex.exec(btn);
@@ -251,7 +249,7 @@ function buttonHandler(e){
             } else if (oldQNum < quizes[activeQuiz].length -1) {
                 nextQuestion(activeQuiz, oldQNum + 1);
             } else {
-                printScore();
+                printScore(activeQuiz);
             }
             break;
         case "back":
