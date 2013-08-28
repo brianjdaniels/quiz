@@ -290,7 +290,7 @@ function loginHandler(e){
 	    } else {
 		users[uname] = {
 		    password: pword,
-            scores: {}
+            scores: []
 		};
 		localStorage.setItem("users", JSON.stringify(users));
 		CookieUtil.set("currentUser", uname);
