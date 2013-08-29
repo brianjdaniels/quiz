@@ -67,8 +67,7 @@ var quizApp = {
         signInArea: document.getElementById("signIn"),
         welcomeHTML: document.createElement("p"),
         logoutHTML: document.createElement("a"),
-
-        loginHolder: "",
+        loginHolder: document.createElement("p"),
 
         setUpLoginElements: function(){
             quizApp.auth.welcomeHTML.innerHTML = "Welcome, <span id='welcomeName'></span>!";
@@ -133,6 +132,7 @@ var quizApp = {
             quizApp.Utils.EventUtil.preventDefault(e);
             quizApp.Utils.CookieUtil.unset("currentUser");
             quizApp.auth.signInArea.replaceChild(quizApp.auth.loginHolder, quizApp.auth.welcomeHTML);
+            quizApp.auth.loginForm.reset();
         }
 
     },
