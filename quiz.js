@@ -25,20 +25,15 @@ var quizApp = {
     buttonHandler: function(e){
         quizApp.Utils.EventUtil.preventDefault(e);
         var btn = ( e.target || e.srcElement ).id;
-        var answersRegex = /answers(\d+)/;
-        var backRegex = /back(\d+)/;
+        var btnRegex = /([A-Za-z]+)(\d+)/;
         var btnCase = "";
         var activeQuiz = "";
-        if (answersRegex.exec(btn)){
-            btnCase = "answers";
-            var result = answersRegex.exec(btn);
-            activeQuiz = result[1];
-        }else if (backRegex.exec(btn)){
-            btnCase = "back";
-            var result2 = backRegex.exec(btn);
-            activeQuiz = result2[1];
+        if (btnRegex.exec(btn)){
+            var result = btnRegex.exec(btn);
+            btnCase = result[1];
+            activeQuiz = result[2];
         }else{
-            window.alert("I don't know what button you pressed...Sorry!");
+            window.alert("I don't know what button you pressed... Sorry!")
         }
         var question = document.getElementById(("questionText" + activeQuiz));
         var oldQNum = parseInt(question.getAttribute("data-qNum"), 10);
@@ -353,30 +348,3 @@ var quizApp = {
 };
 
 quizApp.loadQuiz();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
