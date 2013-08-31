@@ -4,9 +4,9 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brian's Quiz</title>
-    <script src="jquery-1.10.2.min.js"></script>
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="main.css">
+    <script src="jquery-1.10.2.min.js"></script>
 </head>
 <body>
 <nav class="navbar navbar-default" role="navigation">
@@ -14,98 +14,11 @@
         <a class="navbar-brand" href="/myQuiz.html">Brian's Quiz</a>
 
         <div id="signIn" class="navbar-right">
-            <form class="navbar-form " id="login" name="login">
-                <input id="uname" type="text" placeholder="Username...">
-                <input id="pword" type="password" placeholder="Password...">
-                <input id="loginBtn" class="btn btn-xs btn-default" type="submit" value="Sign In">
-                <a data-toggle="modal" href="#createAccountModal">Create Account</a>
-            </form>
+
         </div>
     </div>
 </nav>
 <div class="container" id="main">
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#tab1pane" data-toggle="tab">Quiz #1</a></li>
-        <li><a href="#tab2pane" data-toggle="tab">Quiz #2</a></li>
-    </ul>
-    <div class="tab-content">
-            <div id="tab1pane" class="tab-pane active">
-                <div id="quiz0" class="question">
-                    <h3 id="questionText0" data-qNum="0">Question 0?</h3>
-
-                    <form id="answers0" name="answers" role="form">
-                        <div id="answerList0">
-                            <div class="radio col-md-11 col-md-offset-1">
-                                <label>
-                                    <input id="ans0-0" type="radio" name="placeholder" value="a">
-                                    Answer A
-                                </label>
-                            </div>
-                            <div class="radio col-md-11 col-md-offset-1">
-                                <label>
-                                    <input id="ans0-1" type="radio" name="placeholder" value="b">
-                                    Answer B
-                                </label>
-                            </div>
-                            <div class="radio col-md-11 col-md-offset-1">
-                                <label>
-                                    <input id="ans0-2" type="radio" name="placeholder" value="c">
-                                    Answer C
-                                </label>
-                            </div>
-                            <div class="radio col-md-11 col-md-offset-1">
-                                <label>
-                                    <input id="ans0-3" type="radio" name="placeholder" value="d">
-                                    Answer D
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <input class="btn btn-sm btn-primary pull-right" id="next0" type="submit" value="Next">
-                            <button class="btn btn-sm btn-default pull-left" id="back0" type="button">Back</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        <div id="tab2pane" class="tab-pane">
-            <div id="quiz1">
-                <h3 id="questionText1" data-qNum="0">Question 1?</h3>
-
-                <form id="answers1" name="answers" role="form">
-                    <div id="answerList1">
-                        <div class="radio col-md-11 col-md-offset-1">
-                            <label>
-                                <input id="ans1-0" type="radio" name="placeholder" value="a">
-                                Answer A
-                            </label>
-                        </div>
-                        <div class="radio col-md-11 col-md-offset-1">
-                            <label>
-                                <input id="ans1-1" type="radio" name="placeholder" value="b">
-                                Answer B
-                            </label>
-                        </div>
-                        <div class="radio col-md-11 col-md-offset-1">
-                            <label>
-                                <input id="ans1-2" type="radio" name="placeholder" value="c">
-                                Answer C
-                            </label>
-                        </div>
-                        <div class="radio col-md-11 col-md-offset-1">
-                            <label>
-                                <input id="ans1-3" type="radio" name="placeholder" value="d">
-                                Answer D
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <input class="btn btn-sm btn-primary pull-right" id="next1" type="submit" value="Next">
-                        <button class="btn btn-sm btn-default pull-left" id="back1" type="button">Back</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 </div>
 <div class="modal fade" id="createAccountModal">
     <div class="modal-dialog">
@@ -133,9 +46,9 @@
             </div>
         </div>
     </div>
-
 </div>
-<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="bootstrap.min.js"></script>
+<script src="handlebars.js"></script>
 <script src="quiz.js"></script>
 </body>
 </html>

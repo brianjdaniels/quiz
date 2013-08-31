@@ -1,25 +1,44 @@
 var quizApp = {
 
     quizzes: [],
-    chosenAnswers: [],
+
+    user: {
+        username: "",
+        chosenAnswers: [],
+        location: []
+    },
+
 
     loadQuiz: function(){
-        $("div.question").css({display: "none"});
-
-        $.getJSON('questions.json', function(data) {
+        $.getJSON('questions.json', function(data){
             quizApp.quizzes = data;
-            for (var i =0; i < data.length; i++){
+
+            var tabsHTML = quizApp.Utils.render('quizTab', quizApp.quizzes);
+            $('#main').append(tabsHTML);
+
+            for (var i=0; i < data.length; i++){
+
+                var answersElementID = "#quiz" + i + "Question";
+                var questionHTML = quizApp.Utils.render('quizAnswerList', quizApp.quizzes[i][0]);
+                $(answersElementID).append(questionHTML);
+
                 var doc = document;
                 var form = doc.forms[("answers" + i)];
                 var backBtn = doc.getElementById(("back" + i));
+
                 quizApp.Utils.EventUtil.addHandler(backBtn, "click", quizApp.buttonHandler);
                 quizApp.Utils.EventUtil.addHandler(form, "submit", quizApp.buttonHandler);
-                quizApp.chosenAnswers[i] = [];
-                quizApp.nextQuestion(i,0);
+                quizApp.user.chosenAnswers[i] = [];
+                quizApp.user.location[i] = 0;
+
             }
+
+            $('.nav-tabs li:first').addClass("active");
+            $('.tab-content div:first').addClass("active");
+            var createAccountForm = document.forms["createAccount"];
+            quizApp.Utils.EventUtil.addHandler(createAccountForm, "submit", quizApp.auth.loginHandler);
+            quizApp.auth.welcome();
         });
-        quizApp.auth.setUpLoginElements();
-        quizApp.auth.welcome();
     },
 
     buttonHandler: function(e){
@@ -27,32 +46,32 @@ var quizApp = {
         var btn = ( e.target || e.srcElement ).id;
         var btnRegex = /([A-Za-z]+)(\d+)/;
         var btnCase = "";
-        var activeQuiz = "";
+        var quizNumber;
+        var oldQNum;
         if (btnRegex.exec(btn)){
             var result = btnRegex.exec(btn);
             btnCase = result[1];
-            activeQuiz = result[2];
+            quizNumber = result[2];
+            oldQNum = quizApp.user.location[quizNumber];
         }else{
-            window.alert("I don't know what button you pressed... Sorry!")
+            window.alert("I don't know what button you pressed... Sorry!");
         }
-        var question = document.getElementById(("questionText" + activeQuiz));
-        var oldQNum = parseInt(question.getAttribute("data-qNum"), 10);
-        quizApp.getChoice(activeQuiz, oldQNum);
+        quizApp.getChoice(quizNumber, oldQNum);
         switch (btnCase) {
             case "answers":
-                if (quizApp.chosenAnswers[activeQuiz][oldQNum] === undefined) {
+                if (quizApp.user.chosenAnswers[quizNumber][oldQNum] === undefined) {   //Can't check for falsey values b/c a 0 index is OK//
                     window.alert("Please answer the question.");
-                } else if (oldQNum < quizApp.quizzes[activeQuiz].length -1) {
-                    quizApp.nextQuestion(activeQuiz, oldQNum + 1);
+                } else if (oldQNum < quizApp.quizzes[quizNumber].length -1) {
+                    quizApp.nextQuestion(quizNumber, ++quizApp.user.location[quizNumber]);
                 } else {
-                    quizApp.printScore(activeQuiz);
+                    quizApp.printScore(quizNumber);
                 }
                 break;
             case "back":
                 if (oldQNum === 0){
                     window.alert("This is the first question");
                 } else {
-                    quizApp.nextQuestion(activeQuiz, oldQNum -1);
+                    quizApp.nextQuestion(quizNumber, --quizApp.user.location[quizNumber]);
                 }
                 break;
             default :
@@ -62,30 +81,13 @@ var quizApp = {
 
     auth: {
 
-        createAccountForm: document.forms["createAccount"],
-        loginForm: document.forms["login"],
-        signInArea: document.getElementById("signIn"),
-        welcomeHTML: document.createElement("p"),
-        logoutHTML: document.createElement("a"),
-        loginHolder: document.createElement("p"),
-
-        setUpLoginElements: function(){
-            quizApp.auth.welcomeHTML.innerHTML = "Welcome, <span id='welcomeName'></span>!";
-            quizApp.auth.welcomeHTML.className = "navbar-text";
-            quizApp.auth.logoutHTML.href = "#";
-            quizApp.auth.logoutHTML.innerHTML = "<small>      Logout</small>";
-            quizApp.auth.welcomeHTML.appendChild(quizApp.auth.logoutHTML);
-            quizApp.Utils.EventUtil.addHandler(quizApp.auth.logoutHTML, "click", quizApp.auth.logout);
-            quizApp.Utils.EventUtil.addHandler(quizApp.auth.createAccountForm, "submit", quizApp.auth.loginHandler);
-            quizApp.Utils.EventUtil.addHandler(quizApp.auth.loginForm, "submit", quizApp.auth.loginHandler);
-        },
-
         loginHandler: function(e){
             quizApp.Utils.EventUtil.preventDefault(e);
             var btn = ( e.target || e.srcElement ).id;
             var uname = this.elements[0].value;
             var pword = this.elements[1].value;
             var users = {};
+
             if (uname && pword){
                 if (localStorage.users) {
                     users = JSON.parse(localStorage.getItem("users"));
@@ -121,73 +123,49 @@ var quizApp = {
 
         welcome: function(){
             if (quizApp.Utils.CookieUtil.get("currentUser")){
-                var uname = quizApp.Utils.CookieUtil.get("currentUser");
-                quizApp.auth.loginHolder = quizApp.auth.signInArea.replaceChild(quizApp.auth.welcomeHTML, quizApp.auth.loginForm);
-                var welcomeName = document.getElementById("welcomeName");
-                welcomeName.innerHTML = uname;
+                quizApp.user.username = quizApp.Utils.CookieUtil.get("currentUser");
+            }
+            var welcomeHTML = quizApp.Utils.render('login', quizApp.user);
+            $('#signIn').html(welcomeHTML);
+            if (quizApp.user.username){
+                var logout = document.getElementById('logout');
+                quizApp.Utils.EventUtil.addHandler(logout, "click", quizApp.auth.logout);
+            }else{
+                var loginForm = document.forms["login"];
+                quizApp.Utils.EventUtil.addHandler(loginForm, "submit", quizApp.auth.loginHandler);
             }
         },
 
         logout: function(e){
             quizApp.Utils.EventUtil.preventDefault(e);
             quizApp.Utils.CookieUtil.unset("currentUser");
-            quizApp.auth.signInArea.replaceChild(quizApp.auth.loginHolder, quizApp.auth.welcomeHTML);
-            quizApp.auth.loginForm.reset();
+            quizApp.user.username = "";
+            quizApp.auth.welcome();
         }
 
     },
 
     nextQuestion: function(quizNumber, newQ){
-        var form = document.forms[("answers" + quizNumber)];
-        var question = document.getElementById(("questionText" + quizNumber));
-        var oldAnswerList = document.getElementById(("answerList" + quizNumber));
-        var answersDiv = document.createElement('div');
-        answersDiv.id = "answerList" + quizNumber;
-        var choices = quizApp.quizzes[quizNumber][newQ].choices;
-        for (var j = 0, len = choices.length; j < len; j++) {
-            var choice = document.createElement('div');
-            choice.className = "radio col-md-11 col-md-offset-1";
-            var input = document.createElement('input');
-            var label = document.createElement('label');
 
-            input.id = "ans" + quizNumber + "-" + j;
-            input.type = "radio";
-            input.name = "q" + newQ;
-            input.value = j;
-
-            label.htmlFor = input.id;
-            if ( typeof label.textContent == "string" ){
-                label.textContent = choices[j];
-            }else{
-                label.innerText = choices[j];
-            }
-            label.appendChild(input);
-            choice.appendChild(label);
-            answersDiv.appendChild(choice);
-        }
-        var previousChoiceIndex = quizApp.chosenAnswers[quizNumber][newQ];
-        if (previousChoiceIndex > -1){
-            var previousChoiceElement;
-            if (answersDiv.firstElementChild) {
-                previousChoiceElement = answersDiv.childNodes[previousChoiceIndex].firstElementChild.firstElementChild;
-            }else{
-                previousChoiceElement = answersDiv.childNodes[previousChoiceIndex].firstChild.firstChild;
-            }
-            previousChoiceElement.setAttribute("checked", true);
-        }
         $(("#quiz" + quizNumber)).fadeOut( function() {
-            question.textContent = quizApp.quizzes[quizNumber][newQ].question;
-            question.setAttribute("data-qNum", newQ);
-            form.replaceChild(answersDiv, oldAnswerList);
-        }).fadeIn();
-    },
+             var nextQuestionHTML = quizApp.Utils.render('quizAnswerList', quizApp.quizzes[quizNumber][newQ]);
+             var answersElementID = "#quiz" + quizNumber + "Question";
+             $(answersElementID).html(nextQuestionHTML);
+
+             var previousChoiceIndex = quizApp.user.chosenAnswers[quizNumber][newQ];
+             if (previousChoiceIndex > -1){
+                 var selector = "#quiz" + quizNumber + "Question div.radio:eq(" + previousChoiceIndex + ") input";
+                 $(selector).attr("checked", "checked");
+             }
+
+         }).fadeIn();
+     },
 
     getChoice: function(quizNumber, qIndex) {
-        var radioName = "q" + qIndex;
-        var answerList = document.forms[("answers" + quizNumber)][radioName];
+        var answerList = document.forms[("answers" + quizNumber)]["placeholder"];
         for (var i = 0; i < answerList.length; i++){
             if (answerList[i].checked) {
-                quizApp.chosenAnswers[quizNumber][qIndex] = i;
+                quizApp.user.chosenAnswers[quizNumber][qIndex] = i;
                 break;
             }
         }
@@ -203,6 +181,9 @@ var quizApp = {
                         var usr = {};
                         usr.name = user;
                         usr.topScore = Math.max.apply(null, users[user].scores[quizNumber]);
+                        if (user === quizApp.user.username){
+                            usr.currUsr = 1;
+                        }
                         topScores.push(usr);
                     }
                 }
@@ -213,45 +194,47 @@ var quizApp = {
     },
 
     printScore: function(quizNumber){
+        var context = {
+            correct: 0,
+            total: 0,
+            percentCorrect: 0,
+            passing: 0
+        };
+
         var quizArray = quizApp.quizzes[quizNumber];
-        var total = quizArray.length;
-        var correct = 0;
-        for (var i = 0; i < total; i++){
-            if (quizArray[i].correctAnswer === quizApp.chosenAnswers[quizNumber][i]) {
-                correct++;
+
+        context.total = quizArray.length;
+        context.correct = 0;
+        for (var i = 0; i < context.total; i++){
+            if (quizArray[i].correctAnswer === quizApp.user.chosenAnswers[quizNumber][i]) {
+                context.correct++;
             }
         }
-        var score = Math.round(correct / total * 100);
-        var summary;
-        if (score > 60) { summary = "Congratulations!"; } else { summary = "Oh, snap!"; }
+        context.percentCorrect = Math.round(context.correct / context.total * 100);
+        if (context.percentCorrect > 60) { context.passing = 1; }
+
         var currentUser = quizApp.Utils.CookieUtil.get("currentUser");
+
         if ( currentUser) {
             var scores = [];
             var users = JSON.parse( localStorage.getItem("users") );
             if ( users[currentUser].scores[quizNumber] ) {
                 scores = users[currentUser].scores[quizNumber];
             }
-            scores.push(score);
+            scores.push(context.percentCorrect);
             users[currentUser].scores[quizNumber] = scores;
             localStorage.setItem("users", JSON.stringify(users) );
         }
+
         var leaderArray = quizApp.getTopScores(quizNumber);
-        var leaderHTML = document.createElement("ol");
-        for (var j = 0, len = leaderArray.length; j < len; j++){
-            var li = document.createElement("li");
-            li.innerHTML = leaderArray[j].name + ": " + leaderArray[j].topScore;
-            if ( leaderArray[j].name === currentUser ){ li.className = "currUsr"; }
-            leaderHTML.appendChild(li);
-        }
-        var div = "quiz" + quizNumber;
-        $(("#" + div)).fadeOut( function() {
-            var content = document.getElementById(div);
-            content.innerHTML = "<h1>" + summary + "</h1>" +
-                "<p>You answered " + correct + " out of " + total  + " correctly!</p>" +
-                "<p> That's " + score  + "%" + "</p>" +
-                "<h3>Leader Board:</h3>";
-            content.appendChild(leaderHTML);
-        }).fadeIn();
+        var leaderHTML = quizApp.Utils.render('leaderBoard', leaderArray);
+        var summaryHTML = quizApp.Utils.render('summary', context);
+
+        $(("#quiz" + quizNumber)).fadeOut(
+            function(){
+                $(this).html(summaryHTML + leaderHTML);
+            }
+        ).fadeIn();
     },
 
 
@@ -265,6 +248,30 @@ var quizApp = {
             });
         },
 
+        render: function (tmpl_name, tmpl_data) {
+            if ( !quizApp.Utils.render.tmpl_cache ) {
+                quizApp.Utils.render.tmpl_cache = {};
+            }
+
+            if ( ! quizApp.Utils.render.tmpl_cache[tmpl_name] ) {
+                var tmpl_dir = '/templates';
+                var tmpl_url = tmpl_dir + '/' + tmpl_name + '.hbs';
+
+                var tmpl_string;
+                $.ajax({
+                    url: tmpl_url,
+                    method: 'GET',
+                    async: false,
+                    success: function(data) {
+                        tmpl_string = data;
+                    }
+                });
+
+                quizApp.Utils.render.tmpl_cache[tmpl_name] = Handlebars.compile(tmpl_string);
+            }
+
+            return quizApp.Utils.render.tmpl_cache[tmpl_name](tmpl_data);
+        },
         /////// CROSS-BROWSER EVENT UTIL AND COOKIE UTIL ////////
         /// From http://www.wrox.com/WileyCDA/WroxTitle/Professional-JavaScript-for-Web-Developers-3rd-Edition.productCd-1118026691,descCd-DOWNLOAD.html
 

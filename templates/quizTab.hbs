@@ -1,0 +1,24 @@
+<ul class="nav nav-tabs">
+    {{#each this }}
+        <li><a href="#tabPane{{@index}}" data-toggle="tab">Quiz #{{@index}}</a></li>
+    {{/each}}
+</ul>
+<div class="tab-content">
+
+    {{#each this }}
+
+        <div id="tabPane{{@index}}" class="tab-pane">
+            <div id="quiz{{@index}}" class="question">
+                <form id="answers{{@index}}" name="answers" role="form">
+                    <div id="quiz{{@index}}Question">
+
+                    </div>
+                    <div class="col-md-4">
+                        <input class="btn btn-sm btn-primary pull-right" id="next{{@index}}" type="submit" value="Next">
+                        <button class="btn btn-sm btn-default pull-left" id="back{{@index}}" type="button">Back</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {{/each }}
+</div>
